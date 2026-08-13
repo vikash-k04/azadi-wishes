@@ -33,7 +33,7 @@
         <div class="creator-intro">
           <span class="eyebrow">MAKE IT YOURS</span>
           <h1>Create Your Wish </h1>
-          <p>Write a message, choose a theme, add a photo if you like, and share your special Independence Day wish.</p>
+          <p>Write a message, add a photo if you like, and share your special Independence Day wish.</p>
         </div>
         <form id="wishForm" novalidate>
           <label>Name
@@ -43,31 +43,6 @@
             <textarea id="message" name="message" maxlength="240" rows="4" placeholder="Write your Independence Day message..." required> Let’s celebrate Independence Day together! Wishing you joy, freedom and pride.</textarea>
             <span class="counter"><span id="counter">0</span>/240</span>
           </label>
-          <div class="theme-selector-group">
-            <span class="theme-label-title">Choose Card Theme</span>
-            <div class="theme-grid">
-              <label class="theme-card active">
-                <input type="radio" name="theme" value="classic" checked>
-                <span class="theme-swatch classic-swatch"></span>
-                <span class="theme-name">Classic Tricolor</span>
-              </label>
-              <label class="theme-card">
-                <input type="radio" name="theme" value="saffron">
-                <span class="theme-swatch saffron-swatch"></span>
-                <span class="theme-name">Royal Saffron</span>
-              </label>
-              <label class="theme-card">
-                <input type="radio" name="theme" value="gold">
-                <span class="theme-swatch gold-swatch"></span>
-                <span class="theme-name">Ashoka Gold</span>
-              </label>
-              <label class="theme-card">
-                <input type="radio" name="theme" value="glass">
-                <span class="theme-swatch glass-swatch"></span>
-                <span class="theme-name">Modern Glass</span>
-              </label>
-            </div>
-          </div>
           <label>Photo <span class="optional">optional</span>
             <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp">
           </label>

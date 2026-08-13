@@ -679,7 +679,7 @@ textarea {
    Footer
    ============================================================ */
 footer {
-  padding: 35px 20px;
+  padding: 35px 20px 30px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -694,10 +694,11 @@ footer span {
 }
 
 footer nav {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, max-content);
   justify-content: center;
-  gap: 14px;
+  column-gap: 22px;
+  row-gap: 12px;
   margin-top: 12px;
 }
 
@@ -706,6 +707,7 @@ footer nav a {
   color: #fff;
   text-decoration: none;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 footer nav a:hover {
@@ -858,6 +860,11 @@ footer nav a:hover {
 
   .audio-btn {
     padding: 8px 10px;
+  }
+
+  footer nav {
+    grid-template-columns: repeat(3, max-content);
+    column-gap: 18px;
   }
 
   .theme-grid {

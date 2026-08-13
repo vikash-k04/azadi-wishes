@@ -24,16 +24,6 @@ if (messageInput && counter) {
   messageInput.addEventListener("input", () => counter.textContent = messageInput.value.length);
 }
 
-// Theme Selector Radio Handlers
-$$('.theme-card input[name="theme"]').forEach((radio) => {
-  radio.addEventListener("change", (e) => {
-    $$(".theme-card").forEach((card) => card.classList.remove("active"));
-    const label = e.target.closest(".theme-card");
-    if (label) label.classList.add("active");
-    currentTheme = e.target.value;
-  });
-});
-
 // Ambient Audio Setup
 function initAudio() {
   if (!audioToggle) return;
@@ -154,7 +144,39 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   if (line) ctx.fillText(line, x, y);
 }
 
-// 4 Themes Canvas Drawing Engine
+function drawChakra(ctx, x, y, radius, color = "#173d91") {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(3, radius / 18);
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.stroke();
+  for (let spoke = 0; spoke < 24; spoke++) {
+    const angle = (Math.PI * 2 * spoke) / 24;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+    ctx.stroke();
+  }
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, radius / 7, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawRibbon(ctx, W, y, height, color, direction) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(0, y);
+  ctx.bezierCurveTo(W * .25, y + direction * height, W * .58, y - direction * height, W, y + direction * height * .12);
+  ctx.lineTo(W, y + direction * height * 1.2);
+  ctx.bezierCurveTo(W * .58, y + direction * height * .1, W * .25, y + direction * height * 1.6, 0, y + direction * height * .82);
+  ctx.closePath();
+  ctx.fill();
+}
+
+// Single-card drawing engine
 function drawCard(canvas, wish, onReady) {
   const ctx = canvas.getContext("2d");
   const W = canvas.width, H = canvas.height;
@@ -245,6 +267,37 @@ function drawCard(canvas, wish, onReady) {
     ctx.fillText("15 AUGUST • JAI HIND", W / 2, H * .30);
   }
 
+  if (theme === "classic") {
+    const background = ctx.createLinearGradient(0, 0, W, H);
+    background.addColorStop(0, "#fffdf8");
+    background.addColorStop(.6, "#fffaf1");
+    background.addColorStop(1, "#f8f0e3");
+    ctx.fillStyle = background;
+    ctx.fillRect(0, 0, W, H);
+    drawRibbon(ctx, W, 75, 125, "#ff941c", 1);
+    drawRibbon(ctx, W, 194, 105, "#ffffff", 1);
+    drawRibbon(ctx, W, 268, 108, "#138a2e", 1);
+    drawRibbon(ctx, W, H - 145, 112, "#138a2e", -1);
+    drawRibbon(ctx, W, H - 67, 94, "#ffffff", -1);
+    drawRibbon(ctx, W, H - 8, 80, "#ff941c", -1);
+    ctx.save();
+    ctx.shadowColor = "rgba(7, 27, 58, .16)";
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(138, 200, 94, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    drawChakra(ctx, 138, 200, 60);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#10458f";
+    ctx.font = "800 58px Arial";
+    ctx.fillText("HAPPY INDEPENDENCE DAY", W / 2, H * .31);
+    ctx.font = "600 32px Arial";
+    ctx.fillStyle = "#5b6472";
+    ctx.fillText("15 AUGUST - JAI HIND", W / 2, H * .355);
+  }
+
   const cx = W / 2, cy = H * .48, r = 185;
   const finish = () => {
     ctx.strokeStyle = theme === "gold" ? "#fbbf24" : "#fff";
@@ -264,8 +317,10 @@ function drawCard(canvas, wish, onReady) {
     wrapText(ctx, String(wish.message || "").replace(/[<>]/g, ""), cx, H * .80, W * .78, 44);
 
     if (theme === "classic") {
-      ctx.fillStyle = "#ff9933"; ctx.fillRect(0, H * .96, W / 2, H * .04);
-      ctx.fillStyle = "#138808"; ctx.fillRect(W / 2, H * .96, W / 2, H * .04);
+      ctx.fillStyle = "rgba(255,255,255,.92)"; ctx.fillRect(0, H * .96, W, H * .04);
+      ctx.fillStyle = "#ff941c"; ctx.roundRect(0, H * .96, W * .37, H * .04, 16); ctx.fill();
+      ctx.fillStyle = "#138a2e"; ctx.roundRect(W * .63, H * .96, W * .37, H * .04, 16); ctx.fill();
+      drawChakra(ctx, W / 2, H * .98, 13);
     }
     if (onReady) onReady();
   };
