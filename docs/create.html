@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b3d91">
+  <meta name="description" content="Create a personalized Independence Day wish and share it with friends and family.">
+  <meta property="og:title" content="Create Your Wish — Celebrate Independence Day 🇮🇳">
+  <meta property="og:description" content="Create a personalized Independence Day wish and share it with friends and family.">
+  <meta property="og:image" content="">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Create Your Wish — Celebrate Independence Day 🇮🇳</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇮🇳</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="flag-stripe" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="./index.html" aria-label="Celebrate Independence Day home">🇮🇳 <span>Celebrate Independence Day</span></a>
+    <div class="header-actions">
+      <button id="audioToggle" class="audio-btn" type="button" aria-label="Toggle ambient music" title="Toggle Music">🎵 <span class="audio-label">Music Off</span></button>
+      <a class="nav-cta" href="./index.html">Home</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="create" class="creator-section create-page">
+      <div class="creator">
+        <div class="creator-intro">
+          <span class="eyebrow">MAKE IT YOURS</span>
+          <h1>Create Your Wish </h1>
+          <p>Write a message, choose a theme, add a photo if you like, and share your special Independence Day wish.</p>
+        </div>
+        <form id="wishForm" novalidate>
+          <label>Name
+            <input id="name" name="name" type="text" maxlength="60" autocomplete="name" placeholder="Enter your name" required>
+          </label>
+          <label>Message
+            <textarea id="message" name="message" maxlength="240" rows="4" placeholder="Write your Independence Day message..." required> Let’s celebrate Independence Day together! Wishing you joy, freedom and pride.</textarea>
+            <span class="counter"><span id="counter">0</span>/240</span>
+          </label>
+          <div class="theme-selector-group">
+            <span class="theme-label-title">Choose Card Theme</span>
+            <div class="theme-grid">
+              <label class="theme-card active">
+                <input type="radio" name="theme" value="classic" checked>
+                <span class="theme-swatch classic-swatch"></span>
+                <span class="theme-name">Classic Tricolor</span>
+              </label>
+              <label class="theme-card">
+                <input type="radio" name="theme" value="saffron">
+                <span class="theme-swatch saffron-swatch"></span>
+                <span class="theme-name">Royal Saffron</span>
+              </label>
+              <label class="theme-card">
+                <input type="radio" name="theme" value="gold">
+                <span class="theme-swatch gold-swatch"></span>
+                <span class="theme-name">Ashoka Gold</span>
+              </label>
+              <label class="theme-card">
+                <input type="radio" name="theme" value="glass">
+                <span class="theme-swatch glass-swatch"></span>
+                <span class="theme-name">Modern Glass</span>
+              </label>
+            </div>
+          </div>
+          <label>Photo <span class="optional">optional</span>
+            <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp">
+          </label>
+          <div id="photoPreview" class="photo-preview hidden">
+            <img id="previewImage" alt="Selected photo preview">
+            <button type="button" id="removePhoto" aria-label="Remove photo">×</button>
+          </div>
+          <button id="submitBtn" class="primary-btn full" type="submit">Create My Wish ✨</button>
+          <p id="formStatus" class="form-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="result" class="result-section hidden">
+      <div class="section-heading">
+        <span class="eyebrow">YOUR WISH IS READY</span>
+        <h2>Share it with someone special.</h2>
+      </div>
+      <div class="result-grid">
+        <div class="canvas-shell"><canvas id="wishCanvas" width="1080" height="1350"></canvas></div>
+        <div class="share-panel">
+          <h3>Let's celebrate together </h3>
+          <p>Share your special wish on WhatsApp or copy the link. When someone opens it, your wish appears first in full screen.</p>
+          <div class="share-link"><input id="shareUrl" readonly><button id="copyBtn" type="button">Copy</button></div>
+          <button id="whatsappBtn" class="share-btn whatsapp" type="button">💬 Share on WhatsApp</button>
+          <button id="downloadBtn" class="share-btn" type="button">⬇️ Download Card</button>
+          <button id="newWishBtn" class="secondary-btn" type="button">Create Another Wish</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>Celebrate Independence Day</strong>
+    <span>Made for celebrating India's spirit of freedom.</span>
+    <nav aria-label="Footer navigation">
+      <a href="./index.html">Home</a>
+      <a href="./about.html">About</a>
+      <a href="./privacy.html">Privacy Policy</a>
+      <a href="./terms.html">Terms</a>
+      <a href="./contact.html">Contact</a>
+    </nav>
+  </footer>
+
+  <script src="./confetti.js"></script>
+  <script src="./storage.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
