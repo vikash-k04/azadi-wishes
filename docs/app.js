@@ -277,9 +277,10 @@ function drawCard(canvas, wish, onReady) {
     drawRibbon(ctx, W, 75, 125, "#ff941c", 1);
     drawRibbon(ctx, W, 194, 105, "#ffffff", 1);
     drawRibbon(ctx, W, 268, 108, "#138a2e", 1);
-    drawRibbon(ctx, W, H - 145, 112, "#138a2e", -1);
-    drawRibbon(ctx, W, H - 67, 94, "#ffffff", -1);
-    drawRibbon(ctx, W, H - 8, 80, "#ff941c", -1);
+    // Keep lower decoration at the edge so it never hides the message.
+    drawRibbon(ctx, W, H + 20, 70, "#138a2e", -1);
+    drawRibbon(ctx, W, H + 72, 58, "#ffffff", -1);
+    drawRibbon(ctx, W, H + 112, 50, "#ff941c", -1);
     ctx.save();
     ctx.shadowColor = "rgba(7, 27, 58, .16)";
     ctx.shadowBlur = 20;
@@ -292,13 +293,13 @@ function drawCard(canvas, wish, onReady) {
     ctx.textAlign = "center";
     ctx.fillStyle = "#10458f";
     ctx.font = "800 58px Arial";
-    ctx.fillText("HAPPY INDEPENDENCE DAY", W / 2, H * .31);
+    ctx.fillText("HAPPY INDEPENDENCE DAY", W / 2, H * .38);
     ctx.font = "600 32px Arial";
     ctx.fillStyle = "#5b6472";
-    ctx.fillText("15 AUGUST - JAI HIND", W / 2, H * .355);
+    ctx.fillText("15 AUGUST - JAI HIND", W / 2, H * .425);
   }
 
-  const cx = W / 2, cy = H * .48, r = 185;
+  const cx = W / 2, cy = H * .55, r = 150;
   const finish = () => {
     ctx.strokeStyle = theme === "gold" ? "#fbbf24" : "#fff";
     ctx.lineWidth = 18;
@@ -306,15 +307,19 @@ function drawCard(canvas, wish, onReady) {
 
     ctx.fillStyle = theme === "saffron" || theme === "gold" ? "#ffffff" : "#14213d";
     ctx.font = "800 58px Arial";
-    ctx.fillText(String(wish.name || "").replace(/[<>]/g, ""), cx, H * .67);
+    ctx.fillText(String(wish.name || "").replace(/[<>]/g, ""), cx, H * .69);
 
+    // Give the slogan and message their own clear line below the name.
+    ctx.save();
+    ctx.translate(0, 35);
     ctx.fillStyle = theme === "gold" ? "#fbbf24" : (theme === "glass" ? "#0284c7" : "#0b3d91");
     ctx.font = "700 42px Arial";
     ctx.fillText("My India • My Pride", cx, H * .73);
 
     ctx.fillStyle = theme === "saffron" ? "#fef3c7" : (theme === "gold" ? "#e5e7eb" : "#596579");
     ctx.font = "500 30px Arial";
-    wrapText(ctx, String(wish.message || "").replace(/[<>]/g, ""), cx, H * .80, W * .78, 44);
+    wrapText(ctx, String(wish.message || "").replace(/[<>]/g, ""), cx, H * .83, W * .72, 44);
+    ctx.restore();
 
     if (theme === "classic") {
       ctx.fillStyle = "rgba(255,255,255,.92)"; ctx.fillRect(0, H * .96, W, H * .04);
