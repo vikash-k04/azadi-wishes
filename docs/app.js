@@ -417,6 +417,17 @@ function drawTemplatePhoto(ctx, image, x, y, radius) {
   ctx.restore();
 }
 
+function drawPhotoFrame(ctx, x, y, radius) {
+  ctx.save();
+  ctx.shadowColor = "rgba(7, 27, 58, .18)";
+  ctx.shadowBlur = 22;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.arc(x, y, radius + 13, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 // Uses the approved high-quality PNG for flag artwork. Only photo and text
 // are drawn dynamically, so they always stay in their own safe areas.
 function drawCard(canvas, wish, onReady) {
@@ -425,8 +436,8 @@ function drawCard(canvas, wish, onReady) {
   const H = canvas.height;
   const cx = W / 2;
   // These match the template's circular frame and leave a clear title/date gap.
-  const photoY = H * .535;
-  const photoRadius = W * .142;
+  const photoY = H * .53;
+  const photoRadius = W * .15;
   const safeText = (value) => String(value || "").replace(/[<>]/g, "");
 
   Promise.all([
@@ -438,17 +449,19 @@ function drawCard(canvas, wish, onReady) {
     ctx.textAlign = "center";
     ctx.fillStyle = "#10458f";
     ctx.font = "800 58px Arial, sans-serif";
-    ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .325);
+    ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .30);
     ctx.fillStyle = "#65738b";
     ctx.font = "600 32px Arial, sans-serif";
-    ctx.fillText("15 AUGUST • JAI HIND", cx, H * .365);
+    ctx.fillText("15 AUGUST • JAI HIND", cx, H * .34);
 
     if (photo) {
+      drawPhotoFrame(ctx, cx, photoY, photoRadius);
       drawTemplatePhoto(ctx, photo, cx, photoY, photoRadius);
     } else {
       ctx.save();
       ctx.fillStyle = "#f7f3eb";
-      ctx.beginPath(); ctx.arc(cx, photoY, photoRadius - 7, 0, Math.PI * 2); ctx.fill();
+      drawPhotoFrame(ctx, cx, photoY, photoRadius);
+      ctx.beginPath(); ctx.arc(cx, photoY, photoRadius, 0, Math.PI * 2); ctx.fill();
       drawChakra(ctx, cx, photoY, photoRadius * .32, "#1d4c9a");
       ctx.restore();
     }
@@ -471,13 +484,14 @@ function drawCard(canvas, wish, onReady) {
       ctx.textAlign = "center";
       ctx.fillStyle = "#10458f";
       ctx.font = "800 58px Arial, sans-serif";
-      ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .325);
+      ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .30);
       ctx.fillStyle = "#65738b";
       ctx.font = "600 32px Arial, sans-serif";
-      ctx.fillText("15 AUGUST • JAI HIND", cx, H * .365);
+      ctx.fillText("15 AUGUST • JAI HIND", cx, H * .34);
       ctx.save();
       ctx.fillStyle = "#f7f3eb";
-      ctx.beginPath(); ctx.arc(cx, photoY, photoRadius - 7, 0, Math.PI * 2); ctx.fill();
+      drawPhotoFrame(ctx, cx, photoY, photoRadius);
+      ctx.beginPath(); ctx.arc(cx, photoY, photoRadius, 0, Math.PI * 2); ctx.fill();
       drawChakra(ctx, cx, photoY, photoRadius * .32, "#1d4c9a");
       ctx.restore();
       ctx.fillStyle = "#142f63";
