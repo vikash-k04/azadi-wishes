@@ -424,8 +424,9 @@ function drawCard(canvas, wish, onReady) {
   const W = canvas.width;
   const H = canvas.height;
   const cx = W / 2;
-  const photoY = H * .51;
-  const photoRadius = W * .155;
+  // These match the template's circular frame and leave a clear title/date gap.
+  const photoY = H * .535;
+  const photoRadius = W * .142;
   const safeText = (value) => String(value || "").replace(/[<>]/g, "");
 
   Promise.all([
@@ -437,10 +438,10 @@ function drawCard(canvas, wish, onReady) {
     ctx.textAlign = "center";
     ctx.fillStyle = "#10458f";
     ctx.font = "800 58px Arial, sans-serif";
-    ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .355);
+    ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .325);
     ctx.fillStyle = "#65738b";
     ctx.font = "600 32px Arial, sans-serif";
-    ctx.fillText("15 AUGUST • JAI HIND", cx, H * .398);
+    ctx.fillText("15 AUGUST • JAI HIND", cx, H * .365);
 
     if (photo) {
       drawTemplatePhoto(ctx, photo, cx, photoY, photoRadius);
@@ -470,10 +471,10 @@ function drawCard(canvas, wish, onReady) {
       ctx.textAlign = "center";
       ctx.fillStyle = "#10458f";
       ctx.font = "800 58px Arial, sans-serif";
-      ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .355);
+      ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .325);
       ctx.fillStyle = "#65738b";
       ctx.font = "600 32px Arial, sans-serif";
-      ctx.fillText("15 AUGUST • JAI HIND", cx, H * .398);
+      ctx.fillText("15 AUGUST • JAI HIND", cx, H * .365);
       ctx.save();
       ctx.fillStyle = "#f7f3eb";
       ctx.beginPath(); ctx.arc(cx, photoY, photoRadius - 7, 0, Math.PI * 2); ctx.fill();
