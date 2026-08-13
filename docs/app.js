@@ -12,6 +12,7 @@ const counter = $("#counter");
 const result = $("#result");
 const shared = $("#shared");
 const audioToggle = $("#audioToggle");
+const CARD_TEMPLATE_URL = "./card-template.png";
 
 let selectedImageData = null;
 let currentTheme = "classic";
@@ -393,6 +394,105 @@ function drawCard(canvas, wish, onReady) {
 }
 
 // Blogger landing page URL — share links always point here
+function loadCanvasImage(src, useCors = false) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.decoding = "async";
+    if (useCors) image.crossOrigin = "anonymous";
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("Image could not be loaded."));
+    image.src = src;
+  });
+}
+
+function drawTemplatePhoto(ctx, image, x, y, radius) {
+  const scale = Math.max((radius * 2) / image.width, (radius * 2) / image.height);
+  const width = image.width * scale;
+  const height = image.height * scale;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(image, x - width / 2, y - height / 2, width, height);
+  ctx.restore();
+}
+
+// Uses the approved high-quality PNG for flag artwork. Only photo and text
+// are drawn dynamically, so they always stay in their own safe areas.
+function drawCard(canvas, wish, onReady) {
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width;
+  const H = canvas.height;
+  const cx = W / 2;
+  const photoY = H * .51;
+  const photoRadius = W * .155;
+  const safeText = (value) => String(value || "").replace(/[<>]/g, "");
+
+  Promise.all([
+    loadCanvasImage(CARD_TEMPLATE_URL),
+    wish.image ? loadCanvasImage(wish.image, !wish.image.startsWith("data:")) : Promise.resolve(null),
+  ]).then(([template, photo]) => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(template, 0, 0, W, H);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#10458f";
+    ctx.font = "800 58px Arial, sans-serif";
+    ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .355);
+    ctx.fillStyle = "#65738b";
+    ctx.font = "600 32px Arial, sans-serif";
+    ctx.fillText("15 AUGUST • JAI HIND", cx, H * .398);
+
+    if (photo) {
+      drawTemplatePhoto(ctx, photo, cx, photoY, photoRadius);
+    } else {
+      ctx.save();
+      ctx.fillStyle = "#f7f3eb";
+      ctx.beginPath(); ctx.arc(cx, photoY, photoRadius - 7, 0, Math.PI * 2); ctx.fill();
+      drawChakra(ctx, cx, photoY, photoRadius * .32, "#1d4c9a");
+      ctx.restore();
+    }
+
+    ctx.fillStyle = "#142f63";
+    ctx.font = "800 58px Arial, sans-serif";
+    ctx.fillText(safeText(wish.name), cx, H * .70);
+    ctx.fillStyle = "#1050a0";
+    ctx.font = "700 42px Arial, sans-serif";
+    ctx.fillText("My India • My Pride", cx, H * .755);
+    ctx.fillStyle = "#596b86";
+    ctx.font = "500 30px Arial, sans-serif";
+    wrapText(ctx, safeText(wish.message), cx, H * .815, W * .68, 44);
+    if (onReady) onReady();
+  }).catch((error) => {
+    console.warn("Card photo could not be loaded:", error);
+    // Do not show a broken/green circle. Render the template with a neutral frame.
+    loadCanvasImage(CARD_TEMPLATE_URL).then((template) => {
+      ctx.drawImage(template, 0, 0, W, H);
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#10458f";
+      ctx.font = "800 58px Arial, sans-serif";
+      ctx.fillText("HAPPY INDEPENDENCE DAY", cx, H * .355);
+      ctx.fillStyle = "#65738b";
+      ctx.font = "600 32px Arial, sans-serif";
+      ctx.fillText("15 AUGUST • JAI HIND", cx, H * .398);
+      ctx.save();
+      ctx.fillStyle = "#f7f3eb";
+      ctx.beginPath(); ctx.arc(cx, photoY, photoRadius - 7, 0, Math.PI * 2); ctx.fill();
+      drawChakra(ctx, cx, photoY, photoRadius * .32, "#1d4c9a");
+      ctx.restore();
+      ctx.fillStyle = "#142f63";
+      ctx.font = "800 58px Arial, sans-serif";
+      ctx.fillText(safeText(wish.name), cx, H * .70);
+      ctx.fillStyle = "#1050a0";
+      ctx.font = "700 42px Arial, sans-serif";
+      ctx.fillText("My India • My Pride", cx, H * .755);
+      ctx.fillStyle = "#596b86";
+      ctx.font = "500 30px Arial, sans-serif";
+      wrapText(ctx, safeText(wish.message), cx, H * .815, W * .68, 44);
+      if (onReady) onReady();
+    });
+  });
+}
+
 function getSiteRootUrl() {
   // Works on both a user site (https://user.github.io/) and a project site
   // (https://user.github.io/repository/).
