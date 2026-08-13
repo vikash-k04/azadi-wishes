@@ -176,6 +176,58 @@ function drawRibbon(ctx, W, y, height, color, direction) {
   ctx.fill();
 }
 
+function drawReferenceFrame(ctx, W, H) {
+  const background = ctx.createLinearGradient(0, 0, W, H);
+  background.addColorStop(0, "#fffdf9");
+  background.addColorStop(1, "#fff8ed");
+  ctx.fillStyle = background;
+  ctx.fillRect(0, 0, W, H);
+
+  // Top flag wave: decorative only, leaving the title and photo clear.
+  ctx.fillStyle = "#ff941c";
+  ctx.beginPath();
+  ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, 115);
+  ctx.bezierCurveTo(W * .72, 45, W * .45, 220, W * .15, 175);
+  ctx.bezierCurveTo(W * .08, 165, W * .04, 105, 0, 88);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#fff"; ctx.lineWidth = 32;
+  ctx.beginPath();
+  ctx.moveTo(0, 160);
+  ctx.bezierCurveTo(W * .27, 325, W * .62, 110, W, 188);
+  ctx.stroke();
+  ctx.strokeStyle = "#138a2e"; ctx.lineWidth = 28;
+  ctx.beginPath();
+  ctx.moveTo(0, 208);
+  ctx.bezierCurveTo(W * .28, 380, W * .65, 155, W, 235);
+  ctx.stroke();
+
+  ctx.save();
+  ctx.shadowColor = "rgba(7, 27, 58, .18)"; ctx.shadowBlur = 24;
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(135, 195, 92, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+  drawChakra(ctx, 135, 195, 58);
+
+  // Bottom-right flag wave, matching the reference without crossing text.
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, H - 310, W, 310); ctx.clip();
+  ctx.strokeStyle = "#ff941c"; ctx.lineWidth = 46;
+  ctx.beginPath(); ctx.arc(W * 1.03, H - 150, 260, Math.PI * .91, Math.PI * 1.48); ctx.stroke();
+  ctx.strokeStyle = "#fff"; ctx.lineWidth = 34;
+  ctx.beginPath(); ctx.arc(W * 1.03, H - 150, 220, Math.PI * .91, Math.PI * 1.48); ctx.stroke();
+  ctx.strokeStyle = "#138a2e"; ctx.lineWidth = 40;
+  ctx.beginPath(); ctx.arc(W * 1.03, H - 150, 178, Math.PI * .91, Math.PI * 1.48); ctx.stroke();
+  ctx.restore();
+}
+
+function drawPhotoFallback(ctx, x, y, radius) {
+  const fill = ctx.createLinearGradient(0, y - radius, 0, y + radius);
+  fill.addColorStop(0, "#f5f1e9");
+  fill.addColorStop(1, "#e9f1ed");
+  ctx.fillStyle = fill;
+  ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+  drawChakra(ctx, x, y, radius * .38, "#1050a0");
+}
+
 // Single-card drawing engine
 function drawCard(canvas, wish, onReady) {
   const ctx = canvas.getContext("2d");
@@ -268,38 +320,17 @@ function drawCard(canvas, wish, onReady) {
   }
 
   if (theme === "classic") {
-    const background = ctx.createLinearGradient(0, 0, W, H);
-    background.addColorStop(0, "#fffdf8");
-    background.addColorStop(.6, "#fffaf1");
-    background.addColorStop(1, "#f8f0e3");
-    ctx.fillStyle = background;
-    ctx.fillRect(0, 0, W, H);
-    drawRibbon(ctx, W, 75, 125, "#ff941c", 1);
-    drawRibbon(ctx, W, 194, 105, "#ffffff", 1);
-    drawRibbon(ctx, W, 268, 108, "#138a2e", 1);
-    // Keep lower decoration at the edge so it never hides the message.
-    drawRibbon(ctx, W, H + 20, 70, "#138a2e", -1);
-    drawRibbon(ctx, W, H + 72, 58, "#ffffff", -1);
-    drawRibbon(ctx, W, H + 112, 50, "#ff941c", -1);
-    ctx.save();
-    ctx.shadowColor = "rgba(7, 27, 58, .16)";
-    ctx.shadowBlur = 20;
-    ctx.fillStyle = "#fff";
-    ctx.beginPath();
-    ctx.arc(138, 200, 94, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    drawChakra(ctx, 138, 200, 60);
+    drawReferenceFrame(ctx, W, H);
     ctx.textAlign = "center";
     ctx.fillStyle = "#10458f";
     ctx.font = "800 58px Arial";
-    ctx.fillText("HAPPY INDEPENDENCE DAY", W / 2, H * .38);
+    ctx.fillText("HAPPY INDEPENDENCE DAY", W / 2, H * .36);
     ctx.font = "600 32px Arial";
     ctx.fillStyle = "#5b6472";
-    ctx.fillText("15 AUGUST - JAI HIND", W / 2, H * .425);
+    ctx.fillText("15 AUGUST - JAI HIND", W / 2, H * .405);
   }
 
-  const cx = W / 2, cy = H * .55, r = 150;
+  const cx = W / 2, cy = H * .54, r = 145;
   const finish = () => {
     ctx.strokeStyle = theme === "gold" ? "#fbbf24" : "#fff";
     ctx.lineWidth = 18;
@@ -334,16 +365,25 @@ function drawCard(canvas, wish, onReady) {
   ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
   if (wish.image) {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    if (!wish.image.startsWith("data:")) img.crossOrigin = "anonymous";
     img.onload = () => {
       const scale = Math.max((r * 2) / img.width, (r * 2) / img.height);
       const iw = img.width * scale, ih = img.height * scale;
       ctx.drawImage(img, cx - iw / 2, cy - ih / 2, iw, ih);
       ctx.restore(); finish();
     };
-    img.onerror = () => { ctx.restore(); finish(); };
+    img.onerror = () => {
+      drawPhotoFallback(ctx, cx, cy, r);
+      ctx.restore();
+      finish();
+    };
     img.src = wish.image;
   } else {
+    drawPhotoFallback(ctx, cx, cy, r);
+    ctx.restore();
+    finish();
+    return;
+
     const grad = ctx.createLinearGradient(0, cy - r, 0, cy + r);
     grad.addColorStop(0, "#ffd29d"); grad.addColorStop(.5, "#fff"); grad.addColorStop(1, "#bce8b5");
     ctx.fillStyle = grad; ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
